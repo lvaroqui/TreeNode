@@ -5,11 +5,11 @@
 
 /**
  * @brief A class that can be inherited to provide a tree behaviour to a
- * hierachy of objects.
+ * hierarchy of objects.
  *
  * The main goal of this class is to provide an in-place tree graph management
  * without dynamic allocation. This means that all information relative to the
- * graph are embedded into the object. The belonging of the objet to a hiearchy
+ * graph are embedded into the object. The belonging of the objet to a hierarchy
  * is considered to be an intrinsic property.
  *
  * This exposes some limitations:
