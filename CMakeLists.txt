@@ -23,22 +23,15 @@ endif()
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 # Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
+# the gtest and gtest_main gmock and gmock_main targets.
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                  ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
                  EXCLUDE_FROM_ALL)
 
-# The gtest/gtest_main targets carry header search path
-# dependencies automatically when using CMake 2.8.11 or
-# later. Otherwise we have to add them here ourselves.
-if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
-endif()
-
 include_directories(include)
 
 add_executable(TreeNodeTest tests/TreeNodeTest.cpp)
-target_link_libraries(TreeNodeTest gtest_main)
+target_link_libraries(TreeNodeTest gmock_main)
 add_test(NAME TreeNodeTest COMMAND TreeNodeTest)
 
-add_executable(TreeNode main.cpp src/TreeNode.cpp)
+add_executable(TreeNode main.cpp)

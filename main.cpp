@@ -3,7 +3,5 @@
 
 int main(int, char **)
 {
-    TreeNode root(nullptr);
-
     std::cout << "Hello, world!\n";
 }
