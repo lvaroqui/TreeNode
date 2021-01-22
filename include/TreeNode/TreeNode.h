@@ -25,6 +25,9 @@ template <typename T>
 class TreeNode
 {
 public:
+    /**
+     * @brief Creates a new node
+     */
     explicit TreeNode(TreeNode *parent) : mParent(parent), mChild(nullptr), mSibling(nullptr)
     {
         if (mParent == nullptr)
@@ -38,9 +41,13 @@ public:
         }
         else
         {
-            // Take previous parent child as sibling and become new first child
-            mSibling = mParent->mChild;
-            mParent->mChild = this;
+            // Find last sibling of parent and become its sibling
+            TreeNode *node = mParent->mChild;
+            while (node->mSibling != nullptr)
+            {
+                node = node->mSibling;
+            }
+            node->mSibling = this;
         }
     }
 
@@ -81,8 +88,8 @@ public:
 
         depthFirstIt(const depthFirstIt &) = default;
         ~depthFirstIt() = default;
-        reference operator*() const { return static_cast<reference>(*mNode); }
-        pointer operator->() const { return static_cast<pointer>(mNode); }
+        reference operator*() { return static_cast<reference>(*mNode); }
+        pointer operator->() { return static_cast<pointer>(mNode); }
         friend void swap(depthFirstIt &lhs, depthFirstIt &rhs) { std::swap(lhs, rhs); }
 
         depthFirstIt &operator++()
@@ -97,16 +104,22 @@ public:
                 mNode = mNode->mSibling;
                 return *this;
             }
+            // If we created the iterator on a leaf we can already be the root
+            if (mNode == mRoot)
+            {
+                mIsEnd = true;
+                return *this;
+            }
+
             // Climb up the tree until end or next eligible node (first ancestor sibling)
             while (true)
             {
-                // Reached the end
+                mNode = mNode->mParent;
                 if (mNode == mRoot)
                 {
                     mIsEnd = true;
                     return *this;
                 }
-                mNode = mNode->mParent;
                 if (mNode->mSibling)
                 {
                     mNode = mNode->mSibling;
@@ -170,5 +183,17 @@ TreeNode<T>::~TreeNode()
     if (mParent->mChild == this)
     {
         mParent->mChild = mSibling;
+    }
+    // We are not the first child and have a sibling, we need to link together
+    // the remaining nodes
+    else if (mSibling != nullptr)
+    {
+        // Find our leftSibling
+        TreeNode *node = mParent->mChild;
+        while (node->mSibling != this)
+        {
+            node = node->mSibling;
+        }
+        node->mSibling = mSibling;
     }
 }
